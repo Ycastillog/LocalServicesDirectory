@@ -2,11 +2,11 @@
 
 namespace LocalServicesDirectory.Domain.Entities
 {
-    public class Category : BaseEntity
+    public class City : BaseEntity
     {
         public string Name { get; set; } = string.Empty;
-        public string? Description { get; set; }
+        public string? State { get; set; }
+        public string Country { get; set; } = "República Dominicana";
     }
 }
-
 

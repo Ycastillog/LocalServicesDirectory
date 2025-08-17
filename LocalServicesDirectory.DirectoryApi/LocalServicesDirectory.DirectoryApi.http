@@ -1,0 +1,6 @@
+@LocalServicesDirectory.DirectoryApi_HostAddress = http://localhost:5113
+
+GET {{LocalServicesDirectory.DirectoryApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

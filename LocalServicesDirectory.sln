@@ -1,11 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36119.2 d17.14
+VisualStudioVersion = 17.14.36119.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalServicesDirectory.Domain", "LocalServicesDirectory.Domain\LocalServicesDirectory.Domain.csproj", "{1D9079D9-6768-4B56-AC6B-BFB3CB2BD925}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalServicesDirectory.Infrastructure", "LocalServicesDirectory.Infrastructure\LocalServicesDirectory.Infrastructure.csproj", "{799786EC-75FC-42BC-A4CB-EF01C1319647}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalServicesDirectory.DirectoryApi", "LocalServicesDirectory.DirectoryApi\LocalServicesDirectory.DirectoryApi.csproj", "{0693853C-3F3E-4219-ADE7-904AC67F404A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1D9079D9-6768-4B56-AC6B-BFB3CB2BD925} = {1D9079D9-6768-4B56-AC6B-BFB3CB2BD925}
+		{799786EC-75FC-42BC-A4CB-EF01C1319647} = {799786EC-75FC-42BC-A4CB-EF01C1319647}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalServicesDirectory.Application", "LocalServicesDirectory.Application\LocalServicesDirectory.Application.csproj", "{ADF23A3E-0224-4D4A-92EE-F3705F19C785}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +29,14 @@ Global
 		{799786EC-75FC-42BC-A4CB-EF01C1319647}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{799786EC-75FC-42BC-A4CB-EF01C1319647}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{799786EC-75FC-42BC-A4CB-EF01C1319647}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0693853C-3F3E-4219-ADE7-904AC67F404A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0693853C-3F3E-4219-ADE7-904AC67F404A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0693853C-3F3E-4219-ADE7-904AC67F404A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0693853C-3F3E-4219-ADE7-904AC67F404A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADF23A3E-0224-4D4A-92EE-F3705F19C785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADF23A3E-0224-4D4A-92EE-F3705F19C785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADF23A3E-0224-4D4A-92EE-F3705F19C785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADF23A3E-0224-4D4A-92EE-F3705F19C785}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

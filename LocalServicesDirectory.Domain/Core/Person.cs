@@ -1,13 +1,18 @@
-﻿using LocalServicesDirectory.Domain.Core;
+﻿using System;
+using LocalServicesDirectory.Domain.Core;
 
-namespace LocalServicesDirectory.Domain.Entities
+namespace LocalServicesDirectory.Domain.Core
 {
-    public class Service : BaseEntity
+    
+    public abstract class Person : BaseEntity
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public Guid CategoryId { get; set; }
-        public Guid ProviderId { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string? Phone { get; set; }
+        public string? Email { get; set; }
+
+        public string FullName() => $"{FirstName} {LastName}".Trim();
     }
 }
+
 

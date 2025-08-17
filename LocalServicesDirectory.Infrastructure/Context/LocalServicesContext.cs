@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LocalServicesDirectory.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace LocalServicesDirectory.Infrastructure.Context
+namespace LocalServicesDirectory.Infrastructure
 {
-    internal class LocalServicesContext
+    public class LocalServicesContext : DbContext
     {
+        public LocalServicesContext(DbContextOptions<LocalServicesContext> options) : base(options) { }
+
+        public DbSet<Category> Categories => Set<Category>();
+        public DbSet<Service> Services => Set<Service>();
+        public DbSet<User> Users => Set<User>();
+        public DbSet<Rating> Ratings => Set<Rating>();
     }
 }
