@@ -5,9 +5,9 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DI mínimas. Si no tienes AddApplicationServices, quítalo.
+
 builder.Services.AddInfrastructureServices(builder.Configuration);
-// builder.Services.AddApplicationServices();
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -21,11 +21,12 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazorApp", policy =>
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod());
 });
 
 var app = builder.Build();
@@ -36,14 +37,30 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 using (var scope = app.Services.CreateScope())
 {
     var ctx = scope.ServiceProvider.GetRequiredService<LocalServicesContext>();
-    ctx.Database.Migrate();       // aplica migraciones si existen
-    DbInitializer.Seed(ctx);      // siembra datos
+    ctx.Database.Migrate();
+    DbInitializer.Seed(ctx);
 }
 
 app.UseHttpsRedirection();
 app.UseCors("AllowBlazorApp");
+
 app.MapControllers();
+
 app.Run();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var ctx = scope.ServiceProvider.GetRequiredService<LocalServicesContext>();
+    ctx.Database.Migrate();       
+    DbInitializer.Seed(ctx);      
+
+app.UseHttpsRedirection();
+app.UseCors("AllowBlazorApp");
+app.MapControllers();
+    app.Run();
+    }

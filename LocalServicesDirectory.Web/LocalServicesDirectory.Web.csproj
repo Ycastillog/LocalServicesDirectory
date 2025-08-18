@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LocalServicesDirectory.Domain\LocalServicesDirectory.Domain.csproj" />
+    <ProjectReference Include="..\LocalServicesDirectory.Infrastructure\LocalServicesDirectory.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
