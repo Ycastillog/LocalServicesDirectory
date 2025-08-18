@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalServicesDirectory.Dire
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalServicesDirectory.Application", "LocalServicesDirectory.Application\LocalServicesDirectory.Application.csproj", "{ADF23A3E-0224-4D4A-92EE-F3705F19C785}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalServicesDirectory.Web", "LocalServicesDirectory.Web\LocalServicesDirectory.Web.csproj", "{776DDDB0-5625-44B3-9DBE-F5C5F21DF3CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{ADF23A3E-0224-4D4A-92EE-F3705F19C785}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADF23A3E-0224-4D4A-92EE-F3705F19C785}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADF23A3E-0224-4D4A-92EE-F3705F19C785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{776DDDB0-5625-44B3-9DBE-F5C5F21DF3CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{776DDDB0-5625-44B3-9DBE-F5C5F21DF3CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{776DDDB0-5625-44B3-9DBE-F5C5F21DF3CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{776DDDB0-5625-44B3-9DBE-F5C5F21DF3CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

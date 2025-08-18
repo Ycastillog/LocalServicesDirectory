@@ -1,0 +1,76 @@
+﻿@page "/categories"
+@using LocalServicesDirectory.Web.Services
+@inject ServiceApiClient Api
+
+<h3 class="mb-3">Categorías</h3>
+
+<div class="d-flex gap-2 mb-3">
+    <input class="form-control" placeholder="Nombre..." @bind="form.Name" />
+    <input class="form-control" placeholder="Descripción..." @bind="form.Description" />
+    <button class="btn btn-success" @onclick="Save">@(editingId is null ? "Crear" : "Guardar")</button>
+    @if (editingId is not null)
+    {
+        <button class="btn btn-secondary" @onclick="Cancel">Cancelar</button>
+    }
+</div>
+
+@if (items.Count == 0)
+{
+    <p>No hay categorías.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead><tr><th>Nombre</th><th>Descripción</th><th class="text-end">Acciones</th></tr></thead>
+        <tbody>
+            @foreach (var c in items)
+            {
+                <tr>
+                    <td>@c.Name</td>
+                    <td>@c.Description</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-primary" @onclick="() => Edit(c)">Editar</button>
+                        <button class="btn btn-sm btn-outline-danger ms-2" @onclick="() => Remove(c.Id)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<ServiceApiClient.CategoryDto> items = new();
+    ServiceApiClient.CreateOrUpdateCategoryDto form = new();
+    Guid? editingId;
+
+    protected override async Task OnInitializedAsync() => await Load();
+
+    async Task Load() => items = await Api.GetCategoriesAsync();
+
+    void Edit(ServiceApiClient.CategoryDto c)
+    {
+        editingId = c.Id;
+        form = new() { Name = c.Name, Description = c.Description };
+    }
+
+    void Cancel()
+    {
+        editingId = null;
+        form = new();
+    }
+
+    async Task Save()
+    {
+        bool ok = editingId is null
+            ? await Api.CreateCategoryAsync(form)
+            : await Api.UpdateCategoryAsync(editingId.Value, form);
+
+        if (ok) { Cancel(); await Load(); }
+    }
+
+    async Task Remove(Guid id)
+    {
+        if (await Api.DeleteCategoryAsync(id)) await Load();
+    }
+}
+

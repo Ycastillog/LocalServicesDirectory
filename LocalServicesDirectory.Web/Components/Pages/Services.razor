@@ -1,0 +1,106 @@
+﻿@page "/services"
+@using LocalServicesDirectory.Web.Services
+@using LocalServicesDirectory.Web.Components.Shared
+@inject ServiceApiClient Api
+
+<h3 class="mb-3">Servicios</h3>
+
+<div class="mb-2 d-flex gap-2">
+    <input class="form-control" placeholder="Buscar..." @bind="query" @bind:event="oninput" />
+    <button class="btn btn-primary" @onclick="Load">Buscar</button>
+    <button class="btn btn-success" @onclick="New">Nuevo</button>
+</div>
+
+@if (loading)
+{
+    <p>Cargando...</p>
+}
+else if (items.Count == 0)
+{
+    <p>No hay resultados.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Ciudad</th>
+                <th>Rating</th>
+                <th class="text-end">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in items)
+            {
+                <tr>
+                    <td>@s.Name</td>
+                    <td>@GetCategoryName(s.CategoryId)</td>
+                    <td>@GetCityName(s.CityId)</td>
+                    <td>@s.AverageRating.ToString("0.0")</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-primary" @onclick="@(() => Edit(s.Id))">Editar</button>
+                        <button class="btn btn-sm btn-outline-danger ms-2" @onclick="@(() => Remove(s.Id))">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<ServiceForm Visible="@showForm" ItemId="@editingId" OnClose="OnFormClose" />
+
+@code {
+    string? query;
+    bool loading;
+    bool showForm;
+    Guid? editingId;
+
+    List<ServiceApiClient.ServiceDto> items = new();
+    List<ServiceApiClient.CategoryDto> categories = new();
+    List<ServiceApiClient.CityDto> cities = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await Api.GetCategoriesAsync();
+        cities = await Api.GetCitiesAsync();
+        await Load();
+    }
+
+    async Task Load()
+    {
+        loading = true;
+        items = await Api.SearchAsync(query);
+        loading = false;
+        StateHasChanged();
+    }
+
+    void New()
+    {
+        editingId = null;
+        showForm = true;
+    }
+
+    void Edit(Guid id)
+    {
+        editingId = id;
+        showForm = true;
+    }
+
+    async Task Remove(Guid id)
+    {
+        if (await Api.DeleteAsync(id))
+            await Load();
+    }
+
+    async Task OnFormClose(bool updated)
+    {
+        showForm = false;
+        if (updated) await Load();
+    }
+
+    string GetCategoryName(Guid id) => categories.FirstOrDefault(x => x.Id == id)?.Name ?? "-";
+    string GetCityName(Guid id) => cities.FirstOrDefault(x => x.Id == id)?.Name ?? "-";
+}
+

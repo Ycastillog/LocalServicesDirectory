@@ -1,17 +1,16 @@
-﻿using System;
-using LocalServicesDirectory.Domain.Core;
-
-namespace LocalServicesDirectory.Domain.Entities
+﻿namespace LocalServicesDirectory.Domain.Entities
 {
-    
-    public class User : Person
+    public class User : BaseEntity
     {
         public string UserName { get; set; } = string.Empty;
         public byte[] PasswordHash { get; set; } = Array.Empty<byte>();
         public byte[]? PasswordSalt { get; set; }
-        public bool IsProviderOwner { get; set; } = false;
-        public bool IsAdmin { get; set; } = false;
+        public bool IsProviderOwner { get; set; }
+        public bool IsAdmin { get; set; }
+
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string? Phone { get; set; }
+        public string? Email { get; set; }
     }
 }
-
-

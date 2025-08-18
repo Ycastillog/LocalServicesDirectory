@@ -1,27 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using LocalServicesDirectory.Infrastructure.Repositories;
-using LocalServicesDirectory.Domain.Interfaces;
+using LocalServicesDirectory.Infrastructure.Persistence;
 
 namespace LocalServicesDirectory.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration config)
         {
-            services.AddDbContext<LocalServicesContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<LocalServicesContext>(opt =>
+                opt.UseSqlServer(
+                    config.GetConnectionString("DefaultConnection"),
+                    sql => sql.MigrationsAssembly(typeof(LocalServicesContext).Assembly.FullName)
+                )
+            );
 
-            services.AddScoped<IServiceRepository, ServiceRepository>();
-            services.AddScoped<IRatingRepository, RatingRepository>();
+            
 
             return services;
         }
     }
 }
-
-
-
-
-
