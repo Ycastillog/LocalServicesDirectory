@@ -11,7 +11,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpClient<ServiceApiClient>(client =>
 {
-    var baseUrl = builder.Configuration["ApiBaseUrl"] ?? "https://localhost:7246";
+    
+    var baseUrl = builder.Configuration["ApiBaseUrl"] ?? "https://localhost:7075";
     client.BaseAddress = new Uri(baseUrl);
 });
 
@@ -27,10 +28,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-
 app.MapRazorComponents<App>()
-   .AddInteractiveServerRenderMode();   
+   .AddInteractiveServerRenderMode();
 
 app.Run();
+
 
 

@@ -12,12 +12,8 @@ namespace LocalServicesDirectory.DirectoryApi.Controllers
     {
         private readonly IServiceService _service;
 
-        public ServicesController(IServiceService service)
-        {
-            _service = service;
-        }
+        public ServicesController(IServiceService service) => _service = service;
 
-       
         [HttpGet]
         public async Task<IActionResult> Search(
             [FromQuery] string? q,
@@ -33,11 +29,9 @@ namespace LocalServicesDirectory.DirectoryApi.Controllers
             if (categoryId.HasValue && cityId.HasValue)
                 return Ok(await _service.SearchAsync(categoryId.Value, cityId.Value, minRating, skip, take));
 
-            
             return Ok(Array.Empty<object>());
         }
 
-        
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -45,7 +39,6 @@ namespace LocalServicesDirectory.DirectoryApi.Controllers
             return dto is null ? NotFound() : Ok(dto);
         }
 
-        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ServiceDto dto)
         {
@@ -53,7 +46,6 @@ namespace LocalServicesDirectory.DirectoryApi.Controllers
             return CreatedAtAction(nameof(GetById), new { id }, new { id });
         }
 
-        
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] ServiceDto dto)
         {
@@ -61,7 +53,6 @@ namespace LocalServicesDirectory.DirectoryApi.Controllers
             return NoContent();
         }
 
-        
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {

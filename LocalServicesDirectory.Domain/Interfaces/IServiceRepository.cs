@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using LocalServicesDirectory.Domain.Entities;
-
-namespace LocalServicesDirectory.Domain.Interfaces
+﻿namespace LocalServicesDirectory.Domain.Interfaces
 {
-    public interface IServiceRepository : IRepository<Service>
+    using LocalServicesDirectory.Domain.Entities;
+
+    public interface IServiceRepository
     {
-        Task<IReadOnlyList<Service>> SearchAsync(
-            string? text,
-            Guid? categoryId,
-            Guid? cityId,
-            int minRating = 0,
-            int skip = 0,
-            int take = 50);
+        Task<List<Service>> GetAllAsync();
+        Task<Service?> GetByIdAsync(Guid id);
+        Task<Service> AddAsync(Service entity);
+        Task UpdateAsync(Service entity);
+        Task DeleteAsync(Guid id);
     }
 }
+

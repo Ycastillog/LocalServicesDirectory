@@ -1,11 +1,12 @@
+using LocalServicesDirectory.Application;
 using LocalServicesDirectory.Infrastructure;
 using LocalServicesDirectory.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
+builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
 
@@ -17,50 +18,44 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Local Services Directory API",
         Version = "v1",
-        Description = "API para el Directorio de Servicios Locales"
+        Description = "API para la gestión del Directorio de Servicios Locales"
     });
 });
 
-builder.Services.AddCors(options =>
+
+const string DevCors = "_devCors";
+builder.Services.AddCors(opts =>
 {
-    options.AddPolicy("AllowBlazorApp", policy =>
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod());
+    opts.AddPolicy(DevCors, p => p
+        .AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod());
 });
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Local Services Directory API v1");
+    c.RoutePrefix = "swagger"; 
+});
 
 
 using (var scope = app.Services.CreateScope())
 {
-    var ctx = scope.ServiceProvider.GetRequiredService<LocalServicesContext>();
-    ctx.Database.Migrate();
-    DbInitializer.Seed(ctx);
+    var context = scope.ServiceProvider.GetRequiredService<LocalServicesContext>();
+    context.Database.EnsureCreated(); 
 }
 
-app.UseHttpsRedirection();
-app.UseCors("AllowBlazorApp");
 
+app.UseHttpsRedirection();
+
+
+app.UseCors(DevCors);
+
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-
-using (var scope = app.Services.CreateScope())
-{
-    var ctx = scope.ServiceProvider.GetRequiredService<LocalServicesContext>();
-    ctx.Database.Migrate();       
-    DbInitializer.Seed(ctx);      
-
-app.UseHttpsRedirection();
-app.UseCors("AllowBlazorApp");
-app.MapControllers();
-    app.Run();
-    }

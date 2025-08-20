@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using LocalServicesDirectory.Application.Interfaces;
+﻿using LocalServicesDirectory.Application.Interfaces;
 using LocalServicesDirectory.Application.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LocalServicesDirectory.Application
 {
@@ -8,13 +8,9 @@ namespace LocalServicesDirectory.Application
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IServiceService, ServiceService>();
+            services.AddScoped<IServiceService, ServiceService>(); 
             return services;
         }
     }
 }
-
-
-
-
 

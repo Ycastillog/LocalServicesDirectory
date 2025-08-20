@@ -1,26 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<ItemGroup>
+		<!-- EF Core 8 -->
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.8">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
-  </ItemGroup>
+		<!-- Diseño y herramientas (solo build-time) -->
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 
-  <ItemGroup>
-    <ProjectReference Include="..\LocalServicesDirectory.Domain\LocalServicesDirectory.Domain.csproj" />
-  </ItemGroup>
+		<!-- ConfigurationBuilder().AddJsonFile(...), AddEnvironmentVariables() -->
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\LocalServicesDirectory.Domain\LocalServicesDirectory.Domain.csproj" />
+		<ProjectReference Include="..\LocalServicesDirectory.Application\LocalServicesDirectory.Application.csproj" />
+	</ItemGroup>
+
+	<!-- Opcional: solo para ordenar en el Solution Explorer -->
+	<ItemGroup>
+		<Folder Include="Context\" />
+		<Folder Include="Repositories\" />
+		<Folder Include="Persistence\" />
+	</ItemGroup>
 </Project>
+

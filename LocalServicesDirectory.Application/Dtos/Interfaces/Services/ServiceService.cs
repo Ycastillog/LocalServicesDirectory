@@ -1,119 +1,83 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LocalServicesDirectory.Application.Dtos;
 using LocalServicesDirectory.Application.Interfaces;
+using LocalServicesDirectory.Application.Interfaces.Repositories;
 using LocalServicesDirectory.Domain.Entities;
-using LocalServicesDirectory.Domain.Interfaces;
 
 namespace LocalServicesDirectory.Application.Services
 {
     public class ServiceService : IServiceService
     {
-        private readonly IServiceRepository _services;
-        private readonly IRatingRepository _ratings;
+        private readonly IServiceRepository _repo;
 
-        public ServiceService(IServiceRepository services, IRatingRepository ratings)
+        public ServiceService(IServiceRepository repo) => _repo = repo;
+
+        public async Task<IEnumerable<ServiceDto>> SearchAsync(string q, int skip, int take, CancellationToken ct = default)
         {
-            _services = services;
-            _ratings = ratings;
+            if (string.IsNullOrWhiteSpace(q)) return Enumerable.Empty<ServiceDto>();
+            take = NormalizeTake(take); skip = Math.Max(0, skip);
+
+            var items = await _repo.SearchAsync(q.Trim(), skip, take, ct);
+            return items.Select(MapToDto);
         }
 
-        public async Task<Guid> CreateAsync(ServiceDto dto)
+        public async Task<IEnumerable<ServiceDto>> SearchAsync(Guid categoryId, Guid cityId, int minRating, int skip, int take, CancellationToken ct = default)
         {
-            var entity = ToEntity(dto);
-            await _services.AddAsync(entity);
+            take = NormalizeTake(take); skip = Math.Max(0, skip);
+            minRating = Math.Max(0, Math.Min(5, minRating));
+
+            var items = await _repo.SearchAsync(categoryId, cityId, minRating, skip, take, ct);
+            return items.Select(MapToDto);
+        }
+
+        public async Task<ServiceDto?> GetAsync(Guid id, CancellationToken ct = default)
+        {
+            var entity = await _repo.GetByIdAsync(id, ct);
+            return entity is null ? null : MapToDto(entity);
+        }
+
+        public async Task<Guid> CreateAsync(ServiceDto dto, CancellationToken ct = default)
+        {
+            var entity = MapToEntity(dto);
+            if (entity.Id == Guid.Empty) entity.Id = Guid.NewGuid();
+            await _repo.AddAsync(entity, ct);
             return entity.Id;
         }
 
-        public async Task UpdateAsync(Guid id, ServiceDto dto)
+        public async Task UpdateAsync(Guid id, ServiceDto dto, CancellationToken ct = default)
         {
-            var current = await _services.GetByIdAsync(id);
-            if (current is null) return;
-
-            current.Name = dto.Name;
-            current.Description = dto.Description;
-            current.Phone = dto.Phone;
-            current.Email = dto.Email;
-            current.Address = dto.Address;
-            current.CategoryId = dto.CategoryId;
-            current.CityId = dto.CityId;
-            current.Latitude = dto.Latitude;
-            current.Longitude = dto.Longitude;
-            current.WebsiteUrl = dto.WebsiteUrl;
-            current.IsVerified = dto.IsVerified;
-            current.UpdatedAt = DateTime.UtcNow;
-
-            await _services.UpdateAsync(current);
+            var entity = MapToEntity(dto);
+            entity.Id = id;
+            await _repo.UpdateAsync(entity, ct);
         }
 
-        public async Task DeleteAsync(Guid id) => await _services.DeleteAsync(id);
+        public async Task DeleteAsync(Guid id, CancellationToken ct = default)
+            => await _repo.DeleteAsync(id, ct);
 
-        public async Task<ServiceDto?> GetAsync(Guid id)
-        {
-            var e = await _services.GetByIdAsync(id);
-            if (e is null) return null;
-            var dto = ToDto(e);
-            dto.AverageRating = await _ratings.GetAverageForServiceAsync(e.Id);
-            return dto;
-        }
+        private static int NormalizeTake(int take) => take <= 0 ? 50 : Math.Min(take, 200);
 
-        public async Task<IReadOnlyList<ServiceDto>> SearchAsync(string text, int skip = 0, int take = 50)
+        private static ServiceDto MapToDto(Service s) => new ServiceDto
         {
-            var list = await _services.SearchAsync(text, null, null, 0, skip, take);
-            return await ToDtoWithAvg(list);
-        }
-
-        public async Task<IReadOnlyList<ServiceDto>> SearchAsync(Guid categoryId, Guid cityId, int minRating = 0, int skip = 0, int take = 50)
-        {
-            var list = await _services.SearchAsync(null, categoryId, cityId, minRating, skip, take);
-            return await ToDtoWithAvg(list);
-        }
-
-        private async Task<IReadOnlyList<ServiceDto>> ToDtoWithAvg(IEnumerable<Service> entities)
-        {
-            var result = new List<ServiceDto>();
-            foreach (var e in entities)
-            {
-                var dto = ToDto(e);
-                dto.AverageRating = await _ratings.GetAverageForServiceAsync(e.Id);
-                result.Add(dto);
-            }
-            return result;
-        }
-
-        private static Service ToEntity(ServiceDto dto) => new()
-        {
-            Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
-            Phone = dto.Phone,
-            Email = dto.Email,
-            Address = dto.Address,
-            CategoryId = dto.CategoryId,
-            CityId = dto.CityId,
-            Latitude = dto.Latitude,
-            Longitude = dto.Longitude,
-            WebsiteUrl = dto.WebsiteUrl,
-            IsVerified = dto.IsVerified
+            Id = s.Id,
+            Name = s.Name,
+            Description = s.Description,
+            CategoryId = s.CategoryId,
+            CityId = s.CityId,
+            AverageRating = s.AverageRating
         };
 
-        private static ServiceDto ToDto(Service e) => new()
+        private static Service MapToEntity(ServiceDto d) => new Service
         {
-            Id = e.Id,
-            Name = e.Name,
-            Description = e.Description,
-            Phone = e.Phone,
-            Email = e.Email,
-            Address = e.Address,
-            CategoryId = e.CategoryId,
-            CityId = e.CityId,
-            Latitude = e.Latitude,
-            Longitude = e.Longitude,
-            WebsiteUrl = e.WebsiteUrl,
-            IsVerified = e.IsVerified,
-            AverageRating = 0
+            Id = d.Id,
+            Name = d.Name,
+            Description = d.Description,
+            CategoryId = d.CategoryId,
+            CityId = d.CityId,
+            AverageRating = d.AverageRating
         };
     }
 }

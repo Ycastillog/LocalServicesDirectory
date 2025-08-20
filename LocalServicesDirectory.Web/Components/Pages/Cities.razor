@@ -6,7 +6,11 @@
 
 <div class="d-flex gap-2 mb-3">
     <input class="form-control" placeholder="Nombre..." @bind="form.Name" />
-    <button class="btn btn-success" @onclick="Save">@(editingId is null ? "Crear" : "Guardar")</button>
+    <button class="btn btn-success"
+            @onclick="Save"
+            disabled="@string.IsNullOrWhiteSpace(form.Name)">
+        @(editingId is null ? "Crear" : "Guardar")
+    </button>
     @if (editingId is not null)
     {
         <button class="btn btn-secondary" @onclick="Cancel">Cancelar</button>
@@ -59,6 +63,8 @@ else
 
     async Task Save()
     {
+        if (string.IsNullOrWhiteSpace(form.Name)) return;
+
         bool ok = editingId is null
             ? await Api.CreateCityAsync(form)
             : await Api.UpdateCityAsync(editingId.Value, form);
@@ -71,4 +77,3 @@ else
         if (await Api.DeleteCityAsync(id)) await Load();
     }
 }
-
